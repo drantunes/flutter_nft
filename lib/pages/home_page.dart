@@ -14,14 +14,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late FriendRepository friendsRepository;
   List<Friend> friendsList = [];
-  List<bool> checkboxes = [];
 
   @override
   void initState() {
     super.initState();
     friendsRepository = FriendRepository();
     friendsList = friendsRepository.friends;
-    checkboxes = List.generate(friendsList.length, (_) => false);
   }
 
   openFriendPage(Friend friend) {
@@ -80,10 +78,6 @@ class _HomePageState extends State<HomePage> {
               title: Text('Friend # ${friendsList[index].id}'),
               subtitle: Text('${friendsList[index].value} ETH'),
               onTap: () => openFriendPage(friendsList[index]),
-              trailing: Checkbox(
-                value: checkboxes[index],
-                onChanged: (value) => setState(() => checkboxes[index] = value!),
-              ),
             );
           },
           separatorBuilder: (_, __) => const Divider(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nft/models/friend.dart';
 import 'package:flutter_nft/repositories/friend_repository.dart';
+import 'package:provider/provider.dart';
 
 class AddFriendPage extends StatefulWidget {
   final FriendRepository friendsRepository;
@@ -39,6 +40,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
         ),
       );
       widget.onSave();
+
       Navigator.pop(context);
     }
   }
