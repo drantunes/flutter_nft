@@ -4,14 +4,7 @@ import 'package:flutter_nft/repositories/friend_repository.dart';
 import 'package:provider/provider.dart';
 
 class AddFriendPage extends StatefulWidget {
-  final FriendRepository friendsRepository;
-  final void Function() onSave;
-
-  const AddFriendPage({
-    Key? key,
-    required this.friendsRepository,
-    required this.onSave,
-  }) : super(key: key);
+  const AddFriendPage({Key? key}) : super(key: key);
 
   @override
   State<AddFriendPage> createState() => _AddFriendPageState();
@@ -23,10 +16,13 @@ class _AddFriendPageState extends State<AddFriendPage> {
   String _eyes = '';
 
   salvar() {
+    final friendsRepository = Provider.of<FriendRepository>(context, listen: false);
+    //final friendsRepository = context.read<FriendRepository>();
+
     if (_formKey.currentState!.validate()) {
-      widget.friendsRepository.insert(
+      friendsRepository.insert(
         Friend(
-          id: widget.friendsRepository.friends.length + 1,
+          id: friendsRepository.friends.length + 1,
           background: const Color(0XFFC1D7E5),
           eyes: _eyes,
           hat: 'Thinking',
@@ -39,8 +35,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
           value: double.parse(_valor.value.text),
         ),
       );
-      widget.onSave();
-
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Friend cadastrado!')),
+      );
       Navigator.pop(context);
     }
   }

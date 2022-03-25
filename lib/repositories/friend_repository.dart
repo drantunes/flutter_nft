@@ -1,15 +1,20 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_nft/models/friend.dart';
 
-class FriendRepository {
-  List<Friend> friends = [];
+class FriendRepository extends ChangeNotifier {
+  List<Friend> _friends = [];
+
+  UnmodifiableListView<Friend> get friends => UnmodifiableListView(_friends);
 
   insert(Friend friend) {
-    friends.add(friend);
+    _friends.add(friend);
+    notifyListeners();
   }
 
   FriendRepository() {
-    friends = [
+    _friends = [
       Friend(
         id: 1,
         background: const Color(0XFFF2DAC7),

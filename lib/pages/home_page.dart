@@ -3,6 +3,7 @@ import 'package:flutter_nft/models/friend.dart';
 import 'package:flutter_nft/pages/add_friend_page.dart';
 import 'package:flutter_nft/pages/friend_page.dart';
 import 'package:flutter_nft/repositories/friend_repository.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,16 +13,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late FriendRepository friendsRepository;
-  List<Friend> friendsList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    friendsRepository = FriendRepository();
-    friendsList = friendsRepository.friends;
-  }
-
   openFriendPage(Friend friend) {
     Navigator.push(
       context,
@@ -33,21 +24,9 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AddFriendPage(
-          friendsRepository: friendsRepository,
-          onSave: refreshFriends,
-        ),
+        builder: (_) => const AddFriendPage(),
         fullscreenDialog: true,
       ),
-    );
-  }
-
-  refreshFriends() {
-    setState(() {
-      friendsList = friendsRepository.friends;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Friend cadastrado!')),
     );
   }
 
@@ -65,24 +44,27 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
-        child: ListView.separated(
-          itemBuilder: (context, int index) {
-            return ListTile(
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Hero(
-                  tag: 'friend_${friendsList[index].id}',
-                  child: Image.asset('assets/images/${friendsList[index].id}.gif'),
+        child: Consumer<FriendRepository>(builder: (context, friendsRepository, _) {
+          final friendsList = friendsRepository.friends;
+          return ListView.separated(
+            itemBuilder: (context, int index) {
+              return ListTile(
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Hero(
+                    tag: 'friend_${friendsList[index].id}',
+                    child: Image.asset('assets/images/${friendsList[index].id}.gif'),
+                  ),
                 ),
-              ),
-              title: Text('Friend # ${friendsList[index].id}'),
-              subtitle: Text('${friendsList[index].value} ETH'),
-              onTap: () => openFriendPage(friendsList[index]),
-            );
-          },
-          separatorBuilder: (_, __) => const Divider(),
-          itemCount: friendsList.length,
-        ),
+                title: Text('Friend # ${friendsList[index].id}'),
+                subtitle: Text('${friendsList[index].value} ETH'),
+                onTap: () => openFriendPage(friendsList[index]),
+              );
+            },
+            separatorBuilder: (_, __) => const Divider(),
+            itemCount: friendsList.length,
+          );
+        }),
       ),
     );
   }
